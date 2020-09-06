@@ -22,15 +22,16 @@ class SsoApplicationTests {
     @Test
     void contextLoads() throws Exception {
 //        Map<String, String> token = passwordTokenService.generator("aa,bb,xx", qhPublicKey);
-        Map<String, String> token = new HashMap<String, String>(){{
-            put("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoiTkpraEphSzhDNmVYYmF3RUZCVndYY2pGb1JnM1lJVjMrUkh1cyt6REVrUXFoMDJ0RGE1S3hIdHZrVFl4bjcwdG9pNjJWcm1sTmtnWi94eFlNSVZuS1IrUTArZ3hZRHBNWTVoeXQwUEM4ejJYdzVRK2VWeE42QUxRaFFVZWZrNXdiSU5EbW1lU2JrVU5VajZjRUlSSDRmTmZlSG93RjVsa1VrTzg1UTcxdDhnPSIsInNpZ25hdHVyZSI6ImJKSDJmSWNNeXdPV0FFRndnUC9ZSS9GOStQbTFBTTcrZzZkNmRCOEdoT1d2dVI0ajVLOW4yeUJoREdsT0QxME8xOHBzN2ttRWtib0pENzFON2JIM3NtSGJFMTk3YWp6bmJka3RZdlNuVkd3WUpML0E2ZEo2M1o1cGg3bG1YQTVua1hwWEloMmU1L2ZyZ3NDTzhpbmMzYlBHNTBOMXpmZU1UV3VWTmtyNWs5ND0iLCJ0eXBlIjoidG9rZW4iLCJ0b2tlblR5cGUiOiIxIiwiZXhwIjoxNTk0MTc0NzYxLCJpYXQiOjE1OTQxNzQ3MDF9.Lut5ycBUYAF8JMo5-HVb9F95ayrXL34mznokEi9DUts");
-            put("refresh_token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTU5NDE3NTAwMSwiaWF0IjoxNTk0MTc0NzAxfQ.hik0HO-f4HDbz_5m03sEw20bTrPk_Q7dYyGnLuY56Xc");
-        }};
-
 //        System.out.println(token.get("token"));
 //        System.out.println(token.get("refresh_token"));
-        System.out.println(passwordTokenService.verify(token.get("refresh_token"), publicKey));
-        System.out.println(passwordTokenService.verify(token.get("token"), publicKey));
+
+        Map<String, String> token = new HashMap<String, String>(){{
+            put("token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoiTU81dk9pa1gvSnpCTnJPUFlaWUx6UkExdTl0QXZkY3ZUaUx5ajBnWFVCU0ZPUTA3cllPNjBoSVVPRWRIQnRNWGVPaWZ0K0x3alUwcWNKaG92b256R3JXeXNRMXFaUmtTNFhIcU1UQzlIdThqQi9OZmtNeG5YUkhqL2Fqc3I5a1BLbWVhWXYvUnhiOEpvdVR1Ylo2WHRRdzhFcFRzTkhMLzVQR09UTldnOXpZPSIsImF1eGlsaWFyeSI6IlNCSnN4Y1lRbVRwK1B1OGZLd2pXTnpRNWVzVFNaampzdGh3ZjYrS2k1Z3Fzd2Iwc1BMTVlMVExUNHd6TE5hZ2NkTGRHMDBoMzFmWTI2RG0zQmYwSXpnMlNvT0t1VFZtdll5WFV2VjcwUnFLY3BGenBkQWtvVXZML3J3MXRxTk5JS2kvU0ZIM0R3ZzY2bnQ2SjFjOEM3dTRXMWVwUFEvNStzRmlpcGhHcklkST0iLCJzaWduYXR1cmUiOiJPcnVzdmh1VTRHRzBDNkpqbUsvTkhKK2h6ekd6RERpNEtwS0RiZTB1dFo1RzJKNEdwTHhGQ3VLaGNCNlVBWitkeFZnRUJOclpScHppS3c1TDVHYWRyOXAzVm1VTTA5RFkxTTZTUHdXcFRvdUlGbTBJYm5TeWdQV3A1YmhFUE1DcWZqZGJocEFrbGxqWkZLNUZQU2tMcmdGcTU4OXZTU0djTDU0VmdEbEdtaEE9IiwidHlwZSI6InRva2VuIiwidG9rZW5UeXBlIjoiMSIsImV4cCI6MTU5NzI5NTAxNCwiaWF0IjoxNTk3Mjg3ODE0fQ.Mm6Bj9S6dLcMSH_MxaVxOKdwODsFW_kDVFJ5wHXSQ0U");
+            put("refresh_token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTU5NzM3NDIxNCwiaWF0IjoxNTk3Mjg3ODE0fQ.h9GHm3LNB0wVUPSJDH2UQmq1TDnc5m6i_3y-2ykyxc8");
+        }};
+
+        System.out.println(passwordTokenService.verify(token.get("refresh_token")));
+        System.out.println(passwordTokenService.loadInfoByToken(token.get("token")));
     }
 
 }

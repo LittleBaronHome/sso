@@ -9,7 +9,7 @@ import java.util.Map;
 public class PasswordTokenService extends BasicTokenService {
 
     @Override
-    public Map<String, String> generator(String data, String key) throws Exception {
+    public Map<String, String> generator(String data, String key) {
         return super.generator(data, key, String.valueOf(TokenType.Password.getCode()));
     }
 }

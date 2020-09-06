@@ -28,10 +28,22 @@ public abstract class BasicTokenService {
 
     @Value("${KeyPair.PrivateKey}")
     private String privateKey;
+    @Value("${KeyPair.PublicKey}")
+    private String publicKey;
 
-    protected abstract Map<String, String> generator(String data, String key) throws Exception;
+    protected abstract Map<String, String> generator(String data, String key);
 
-    Map<String, String> generator(String data, String key, String tokenType) throws Exception {
+    /**
+     * 生成token
+     * 数据采用外部公钥加密，签名采用内部私钥加密。外部系统用自己私钥解密数据，用本系统公钥解密签名验证
+     * 数据再用内部公钥加密一份，用于本系统解析token携带信息
+     * @param data 要加密的数据
+     * @param key 加密公钥
+     * @param tokenType token类型
+     * @return token
+     */
+    Map<String, String> generator(String data, String key, String tokenType) {
+        String auxiliary_data = RSAUtil.encrypt(data, RSAUtil.getPublicKey(publicKey));
         String secure_data = RSAUtil.encrypt(data, RSAUtil.getPublicKey(key));
         String secure_sign = RSAUtil.sign(secure_data, RSAUtil.getPrivateKey(privateKey));
         Map<String, Object> header_map = new HashMap<>();
@@ -40,6 +52,7 @@ public abstract class BasicTokenService {
         result.put("token", JWT.create().withHeader(header_map)
                 .withClaim("type", "token")
                 .withClaim("data", secure_data)
+                .withClaim("auxiliary", auxiliary_data)
                 .withClaim("signature", secure_sign)
                 .withClaim("tokenType", tokenType)
                 .withIssuedAt(new Date())
@@ -54,7 +67,14 @@ public abstract class BasicTokenService {
         return result;
     }
 
-    public Result verify(String token, String key) throws Exception {
+    /**
+     * 验证token
+     * JWT内置token验证机制，判断token的完整性
+     * 使用内部公钥解析签名，验证token的合法性
+     * @param token token
+     * @return Result
+     */
+    public Result verify(String token) {
         DecodedJWT jwt;
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenSignature)).build();
@@ -68,11 +88,26 @@ public abstract class BasicTokenService {
         if (("token").equals(type)) {
             String data = map.get("data").asString();
             String signature = map.get("signature").asString();
-            if (!RSAUtil.verify(data, RSAUtil.getPublicKey(key), signature)) {
+            if (!RSAUtil.verify(data, RSAUtil.getPublicKey(publicKey), signature)) {
                 return new Result(ExceptionType.IllegalSignature);
             }
+            return new Result(map.get("auxiliary").asString());
         }
 
         return new Result();
+    }
+
+    /**
+     * 验证token
+     * JWT内置token验证机制，判断token的完整性
+     * 使用内部公钥解析签名，验证token的合法性
+     * @param token token
+     * @return Result
+     */
+    public Result loadInfoByToken(String token) {
+        Result verify_result = verify(token);
+        String auxiliary = String.valueOf(verify_result.getData());
+        String data = RSAUtil.decrypt(auxiliary, RSAUtil.getPrivateKey(privateKey));
+        return new Result(data);
     }
 }
